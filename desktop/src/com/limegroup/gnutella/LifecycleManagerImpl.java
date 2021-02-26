@@ -3,10 +3,10 @@ package com.limegroup.gnutella;
 import com.frostwire.bittorrent.BTEngine;
 import com.frostwire.util.Logger;
 import com.limegroup.gnutella.settings.ApplicationSettings;
-import org.limewire.concurrent.ThreadExecutor;
-import org.limewire.service.ErrorService;
+import com.frostwire.concurrent.concurrent.ThreadExecutor;
+import com.frostwire.service.ErrorService;
 import org.limewire.setting.SettingsGroupManager;
-import org.limewire.util.OSUtils;
+import com.frostwire.util.OSUtils;
 import org.limewire.util.SystemUtils;
 
 import java.io.IOException;

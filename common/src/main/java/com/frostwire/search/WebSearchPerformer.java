@@ -67,7 +67,7 @@ public abstract class WebSearchPerformer extends AbstractSearchPerformer {
         return keywords;
     }
 
-    public final String getEncodedKeywords() {
+    public String getEncodedKeywords() {
         return encodedKeywords;
     }
 
@@ -94,6 +94,7 @@ public abstract class WebSearchPerformer extends AbstractSearchPerformer {
         try {
             return client.post(url, timeout, DEFAULT_USER_AGENT, formData);
         } catch (IOException throwable) {
+            LOG.error(throwable.getMessage(), throwable);
             return null;
         }
     }

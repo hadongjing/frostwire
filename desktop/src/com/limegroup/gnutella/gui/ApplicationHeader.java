@@ -1,12 +1,12 @@
 /*
  * Created by Angel Leon (@gubatron), Alden Torres (aldenml)
- * Copyright (c) 2011-2014, FrostWire(R). All rights reserved.
+ * Copyright (c) 2011-2020, FrostWire(R). All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,13 +26,8 @@ import com.frostwire.gui.tabs.Tab;
 import com.frostwire.gui.theme.SkinApplicationHeaderUI;
 import com.frostwire.gui.theme.ThemeMediator;
 import com.frostwire.gui.updates.UpdateMediator;
-import com.limegroup.gnutella.MediaType;
 import com.limegroup.gnutella.gui.GUIMediator.Tabs;
-import com.limegroup.gnutella.gui.actions.FileMenuActions;
-import com.limegroup.gnutella.gui.search.SearchInformation;
-import com.limegroup.gnutella.gui.search.SearchMediator;
 import com.limegroup.gnutella.settings.SearchSettings;
-import com.limegroup.gnutella.util.URLDecoder;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -41,6 +36,8 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Map;
+
+import static com.frostwire.gui.searchfield.GoogleSearchField.CLOUD_SEARCH_FIELD_HINT_TEXT;
 
 /**
  * @author gubatron
@@ -57,7 +54,7 @@ public final class ApplicationHeader extends JPanel implements RefreshListener {
     private static final String DESELECTED_ICON = "DESELECTED_ICON";
     private static final String CLOUD_SEARCH_FIELD = "cloud_search_field";
     private static final String LIBRARY_SEARCH_FIELD = "library_search_field";
-    private static final String CLOUD_SEARCH_FIELD_HINT_TEXT = I18n.tr("Search or enter a cloud sourced URL");
+
     /**
      * The clicker forwarder.
      */
@@ -86,7 +83,7 @@ public final class ApplicationHeader extends JPanel implements RefreshListener {
         headerButtonBackgroundUnselected = GUIMediator.getThemeImage("unselected_header_button_background").getImage();
         cloudSearchField = new GoogleSearchField();
         searchPanels = createSearchPanel();
-        add(searchPanels, "wmin 240px, wmax 370px, growprio 50, growx, gapright 10px, gapleft 5px");
+        add(searchPanels, "wmin 250px, wmax 450px, growprio 50, growx, gapright 10px, gapleft 5px");
         addTabButtons(tabs);
         createUpdateButton();
         JPanel logoUpdateButtonsPanel = new JPanel();
@@ -104,7 +101,6 @@ public final class ApplicationHeader extends JPanel implements RefreshListener {
 
     private JPanel createSearchPanel() {
         JPanel panel = new JPanel(new CardLayout());
-        initCloudSearchField();
         createLibrarySearchField();
         panel.add(cloudSearchField, CLOUD_SEARCH_FIELD);
         panel.add(librarySearchField, LIBRARY_SEARCH_FIELD);
@@ -113,26 +109,6 @@ public final class ApplicationHeader extends JPanel implements RefreshListener {
 
     private void createLibrarySearchField() {
         librarySearchField = LibraryMediator.instance().getLibrarySearch().getSearchField();
-    }
-
-    private void initCloudSearchField() {
-        cloudSearchField.addActionListener(new SearchListener());
-        cloudSearchField.setPrompt(CLOUD_SEARCH_FIELD_HINT_TEXT);
-        cloudSearchField.setText(CLOUD_SEARCH_FIELD_HINT_TEXT);
-        cloudSearchField.selectAll();
-        cloudSearchField.requestFocus();
-        Font origFont = cloudSearchField.getFont();
-        Font newFont = origFont.deriveFont(origFont.getSize2D() + 2f);
-        cloudSearchField.setFont(newFont);
-        cloudSearchField.setMargin(new Insets(0, 2, 0, 0));
-        cloudSearchField.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (cloudSearchField.getText().equals(CLOUD_SEARCH_FIELD_HINT_TEXT)) {
-                    cloudSearchField.setText("");
-                }
-            }
-        });
     }
 
     private void createUpdateButton() {
@@ -185,9 +161,6 @@ public final class ApplicationHeader extends JPanel implements RefreshListener {
                     String query = null;
                     if (tab == Tabs.SEARCH || tab == Tabs.SEARCH_TRANSFERS) {
                         if (!cloudSearchField.getText().isEmpty()) {
-                            if (cloudSearchField.getText().equals(CLOUD_SEARCH_FIELD_HINT_TEXT)) {
-                                cloudSearchField.setText("");
-                            }
                             query = cloudSearchField.getText();
                         } else if (cloudSearchField.getText().isEmpty() && !librarySearchField.getText().isEmpty()) {
                             //they want internet search while on the library
@@ -358,7 +331,6 @@ public final class ApplicationHeader extends JPanel implements RefreshListener {
     private void requestSearchFocusImmediately() {
         if (cloudSearchField != null) {
             cloudSearchField.setPrompt(CLOUD_SEARCH_FIELD_HINT_TEXT);
-            cloudSearchField.setText(CLOUD_SEARCH_FIELD_HINT_TEXT);
             cloudSearchField.selectAll();
             cloudSearchField.requestFocus();
         }
@@ -390,40 +362,6 @@ public final class ApplicationHeader extends JPanel implements RefreshListener {
             if (!(c instanceof AbstractButton)) {
                 AbstractButton b = (AbstractButton) c.getComponent(0);
                 b.doClick();
-            }
-        }
-    }
-
-    private class SearchListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            // Keep the query if there was one before switching to the search tab.
-            String query = cloudSearchField.getText();
-            String queryTitle = query;
-            GUIMediator.instance().setWindow(GUIMediator.Tabs.SEARCH);
-            // Start a download from the search box by entering a URL.
-            if (FileMenuActions.openMagnetOrTorrent(query)) {
-                cloudSearchField.setText("");
-                cloudSearchField.hidePopup();
-                return;
-            }
-            if (query.contains("www.frostclick.com/cloudplayer/?type=yt") ||
-                    query.contains("frostwire-preview.com/?type=yt")) {
-                try {
-                    query = query.split("detailsUrl=")[1];
-                    query = URLDecoder.decode(query);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-            }
-            final SearchInformation info = SearchInformation.createTitledKeywordSearch(query, null, MediaType.getTorrentMediaType(), queryTitle);
-            // If the search worked, store & clear it.
-            if (SearchMediator.instance().triggerSearch(info) != 0) {
-                if (info.isKeywordSearch()) {
-                    cloudSearchField.addToDictionary();
-                    // Clear the existing search.
-                    cloudSearchField.setText("");
-                    cloudSearchField.hidePopup();
-                }
             }
         }
     }

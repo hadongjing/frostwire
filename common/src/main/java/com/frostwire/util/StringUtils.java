@@ -414,6 +414,10 @@ public class StringUtils {
         return s != null ? s.replaceAll("\\s+", " ") : null;
     }
 
+    public static String removeUnicodeCharacters(String s) {
+        return s.replaceAll("[^\\p{L}\\p{N}\\p{P}\\p{Z}]","");
+    }
+
     public static String getLocaleString(Map<String, String> strMap, String defaultStr) {
         String localeLanguageCode = Locale.getDefault().getLanguage();
         if (StringUtils.isNullOrEmpty(localeLanguageCode, true)) {
@@ -429,8 +433,7 @@ public class StringUtils {
     public static int quickHash(String s) {
         int hash = 1;
         for (int i = 0; i < s.length(); i++) {
-            int cInt = s.charAt(i);
-            hash = (hash * cInt) % 0x7fffffff; // modded to int max val
+            hash = (hash * (int) s.charAt(i)) % 0x7fffffff; // modded to int max val
         }
         return hash;
     }

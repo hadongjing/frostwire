@@ -10,6 +10,10 @@
 -keep class org.conscrypt.org.Conscrypt$ProviderBuilder { *; }
 #-keep class androidx.core.view.accessibility.AccessibilityManagerCompat$TouchExplorationStateChangeListenerWrapper { *; }
 -keep class android.net.http.AndroidHttpClient { *; }
+-keep class androidx.core.app.CoreComponentFactory { *; }
+-keep class org.conscrypt.ConscryptHostnameVerifier { *; }
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**
 -keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
 
 #  VUNGLE

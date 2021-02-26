@@ -25,7 +25,6 @@
     <string name="your_installation_is_complete">Instalarea este completă.</string>
     <string name="error_connection_timed_out">Eroare: conexiunea a expirat / a scăzut. Încearcă din nou.</string>
     <string name="azureus_manager_item_seeding">Însămânțarea</string>
-    <string name="application_label">FrostWire</string>
     <string name="all_free_downloads">Toate descărcările gratuite</string>
     <string name="torrent_max_download_speed">Maxima viteza de descărcare</string>
     <string name="torrent_max_peers">Max Peers</string>
@@ -57,7 +56,6 @@
     <string name="wifi_seeding_has_been_turned_off">Wi-Fi nu este disponibil, însămânțarea a fost oprit</string>
     <string name="pause_torrent_menu_action">Pauză</string>
     <string name="storage_preference_title">Selectați Stocare Locație</string>
-    <string name="azureus_manager_item_allocating">Alocând</string>
     <string name="app_shutdown_dlg_message">Acest lucru va opri toate transferurile și serviciile de fundal. Esti sigur?</string>
     <string name="show_transfers_on_download_start">Afișați transferurile de descărcare de start</string>
     <string name="send_feedback">Trimite feedback</string>

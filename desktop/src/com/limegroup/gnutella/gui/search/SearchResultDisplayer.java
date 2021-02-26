@@ -1,26 +1,25 @@
 /*
  * Created by Angel Leon (@gubatron), Alden Torres (aldenml)
- * Copyright (c) 2011-2019, FrostWire(R). All rights reserved.
+ * Copyright (c) 2011-2020, FrostWire(R). All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.limegroup.gnutella.gui.search;
 
 import com.frostwire.gui.components.slides.MultimediaSlideshowPanel;
 import com.frostwire.gui.components.slides.Slide;
-import com.frostwire.gui.components.slides.SlideshowPanel;
+import com.frostwire.util.OSUtils;
 import com.limegroup.gnutella.gui.BoxPanel;
 import com.limegroup.gnutella.gui.GUIMediator;
 import com.limegroup.gnutella.gui.I18n;
@@ -39,6 +38,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -88,7 +88,7 @@ public final class SearchResultDisplayer implements RefreshListener {
      * TODO: Allow more than one.
      */
     private ChangeListener _activeSearchListener;
-    private SlideshowPanel promoSlides;
+    private MultimediaSlideshowPanel promoSlides;
 
     /**
      * Constructs the search display elements.
@@ -110,17 +110,13 @@ public final class SearchResultDisplayer implements RefreshListener {
         } else {
             promoSlides = new MultimediaSlideshowPanel(UpdateManagerSettings.OVERLAY_SLIDESHOW_JSON_URL.getValue(), getDefaultSlides());
         }
-        JPanel p = (JPanel) promoSlides;
-        //p.setBackground(Color.WHITE);
-        Dimension promoDimensions = new Dimension(717, 380);
-        p.setPreferredSize(promoDimensions);
-        p.setSize(promoDimensions);
-        p.setMaximumSize(promoDimensions);
 
-            /*
-             The dummy result panel, used when no searches are active.
-            */
-        SearchResultMediator DUMMY = new SearchResultMediator(p);
+        Dimension promoDimensions = new Dimension(717, 380);
+        promoSlides.setPreferredSize(promoDimensions);
+        promoSlides.setSize(promoDimensions);
+        promoSlides.setMaximumSize(promoDimensions);
+        // The dummy result panel, used when no searches are active.
+        SearchResultMediator DUMMY = new SearchResultMediator(promoSlides);
 
         /* Container for the DUMMY ResultPanel. I'm keeping a reference to this
          * object so that I can refresh the image that it contains.
@@ -142,11 +138,16 @@ public final class SearchResultDisplayer implements RefreshListener {
     }
 
     private List<Slide> getDefaultSlides() {
-        Slide s1 = new Slide("http://static.frostwire.com/images/overlays/default_now_on_android.png", "http://www.frostwire.com/?from=defaultSlide", 240000, null, null, null, null, null, null, 0, Slide.SLIDE_DOWNLOAD_METHOD_OPEN_URL, null, null, null, null, null, null, null, null,
-                null, Slide.OPEN_CLICK_URL_ON_DOWNLOAD);
-        Slide s2 = new Slide("http://static.frostwire.com/images/overlays/frostclick_default_overlay.jpg", "http://www.frostclick.com/?from=defaultSlide", 240000, null, null, null, null, null, null, 0, Slide.SLIDE_DOWNLOAD_METHOD_OPEN_URL, null, null, null, null, null, null, null, null,
-                null, Slide.OPEN_CLICK_URL_ON_DOWNLOAD);
-        return Arrays.asList(s1, s2);
+        if (!OSUtils.isWindowsAppStoreInstall()) {
+            Slide s1 = new Slide("https://static.frostwire.com/images/overlays/default_now_on_android.png", "https://www.frostwire.com/?from=defaultSlide", 240000, null, null, null, null, null, null, 0, Slide.SLIDE_DOWNLOAD_METHOD_OPEN_URL, null, null, null, null, null, null, null, null,
+                    null, Slide.OPEN_CLICK_URL_ON_DOWNLOAD);
+            Slide s2 = new Slide("https://static.frostwire.com/images/overlays/frostclick_default_overlay.jpg", "https://www.frostclick.com/?from=defaultSlide", 240000, null, null, null, null, null, null, 0, Slide.SLIDE_DOWNLOAD_METHOD_OPEN_URL, null, null, null, null, null, null, null, null,
+                    null, Slide.OPEN_CLICK_URL_ON_DOWNLOAD);
+            return Arrays.asList(s1, s2);
+        } else {
+            return Collections.singletonList(new Slide("https://static.frostwire.com/images/overlays/frostclick_default_overlay.jpg", "https://www.frostclick.com/?from=defaultSlide", 240000, null, null, null, null, null, null, 0, Slide.SLIDE_DOWNLOAD_METHOD_OPEN_URL, null, null, null, null, null, null, null, null,
+                    null, Slide.OPEN_CLICK_URL_ON_DOWNLOAD));
+        }
     }
 
     /**
@@ -302,6 +303,17 @@ public final class SearchResultDisplayer implements RefreshListener {
     }
 
     /**
+     * Update the Search Result Panel visible title. The inner SEARCH_INFO for the SearchResultMediator remains untouched
+     */
+    public void updateSearchTitle(SearchResultMediator rp, String title) {
+        int resultPanelIndex = entries.indexOf(rp);
+        if (resultPanelIndex == -1) {
+            return;
+        }
+        tabbedPane.setTitleAt(resultPanelIndex, title);
+    }
+
+    /**
      * Shows the popup menu that displays various options to the user.
      */
     private void showMenu(MouseEvent e) {
@@ -342,7 +354,7 @@ public final class SearchResultDisplayer implements RefreshListener {
      * @return the ResultPanel that matches the specified GUID, or null
      * if none match.
      */
-    SearchResultMediator getResultPanelForGUID(long token) {
+    public SearchResultMediator getResultPanelForGUID(long token) {
         for (SearchResultMediator rp : entries) {
             if (rp.matches(token)) { //order matters: rp may be a dummy guid.
                 return rp;
@@ -387,13 +399,13 @@ public final class SearchResultDisplayer implements RefreshListener {
     }
 
     void closeAllTabs() {
-        while (entries != null && entries.size() > 0) {
+        while (entries.size() > 0) {
             closeTabAt(0);
         }
     }
 
     void closeOtherTabs() {
-        if (entries == null || entries.size() < 2) {
+        if (entries.size() < 2) {
             //nothing to close.
             return;
         }
@@ -512,7 +524,7 @@ public final class SearchResultDisplayer implements RefreshListener {
 
     int tabCount() {
         int result = 0;
-        if (entries != null && !entries.isEmpty()) {
+        if (!entries.isEmpty()) {
             result = entries.size();
         }
         return result;

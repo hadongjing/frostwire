@@ -178,7 +178,7 @@ public class MainActivity extends AbstractActivity implements
                     this,
                     Offers.PLACEMENT_INTERSTITIAL_MAIN,
                     false,
-                    true,
+                    false,
                     true);
         }
     }
@@ -846,7 +846,6 @@ public class MainActivity extends AbstractActivity implements
         if (checker != null) {
             checker.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-        //Offers.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     public void performYTSearch(String ytUrl) {

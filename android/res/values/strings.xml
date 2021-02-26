@@ -28,7 +28,6 @@
     <string name="tip_touch_tags_to"><![CDATA[ <b>TIP:</b> Touch applied tags to]]></string>
 
     <!-- non HTML tags. -->
-    <string name="application_label">FrostWire</string>
     <string name="activity_preferences_name">Settings</string>
     <string name="activity_VPN">Connection</string>
     <string name="exit">Exit</string>
@@ -92,6 +91,8 @@
     <string name="use_tpb">Use TPB</string>
     <string name="use_zooqle">Use Zooqle.com</string>
     <string name="use_yify">Use Yify</string>
+    <string name="use_one337x">Use 1337x</string>
+    <string name="use_idope">Use Idope</string>
     <string name="use_magnet_summary">Magnet based, works only on Wi-Fi</string>
     <string name="ringtone_not_set">Ringtone could not be set</string>
     <string name="search">Search</string>
@@ -111,7 +112,6 @@
     <string name="yes_no_cancel_delete_transfer_question">Are you sure you want to cancel this download (downloaded data so far will be erased)?</string>
     <string name="cancel_transfer">Cancel Transfer</string>
     <string name="azureus_peer_manager_status_finished">Finished</string>
-    <string name="azureus_manager_item_allocating">Allocating</string>
     <string name="azureus_manager_item_downloading">Downloading</string>
     <string name="azureus_manager_item_seeding">Seeding</string>
     <string name="azureus_manager_item_stopped">Stopped</string>
@@ -201,6 +201,8 @@
     <string name="use_magnetdl">Use MagnetDL</string>
     <string name="use_nyaa">Use Nyaa</string>
     <string name="use_eztv">Use Eztv</string>
+    <string name="use_torrent_paradise">Use TorrentParadise</string>
+    <string name="use_glotorrents">Use GloTorrents</string>
     <string name="transfer_status_demuxing">Demuxing</string>
     <string name="you_need_a_bitcoin_wallet_app">You need a Bitcoin wallet installed on your device to submit a BTC donation.</string>
     <string name="transfers_select_all">all</string>
@@ -472,6 +474,7 @@
     <string name="vpn_find_out_more">Find out more</string>
     <string name="frostwire_start_engine_service_security_exception">FrostWire could not start properly due to lack of permissions. Please grant the required permissions and restart the application</string>
     <string name="contact_us">Contact Us</string>
+    <string name="community">Community</string>
     <string name="play_uppercase">PLAY</string>
     <string name="minutes_left_ad_free">%d minutes left Ad-free</string>
     <string name="minute_left_ad_free">One minute left Ad-free</string>
@@ -499,4 +502,7 @@
     <string name="n_months">%s months</string>
     <string name="n_years">%s years</string>
     <string name="enable_sequential_download_summary">Pieces are downloaded in order. Not recommended for network health</string>
+    <string name="dummy_period">/period</string>
+    <string name="period_monthly">monthly</string>
+    <string name="period_yearly">yearly</string>
 </resources>

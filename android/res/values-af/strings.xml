@@ -26,7 +26,6 @@
     <string name="azureus_peer_manager_status_finished">Klaar</string>
     <string name="your_installation_is_complete">Jou installasie is voltooi.</string>
     <string name="azureus_manager_item_seeding">Saai</string>
-    <string name="application_label">FrostWire</string>
     <string name="transfers_context_stop_seeding_all_transfers">Hou op om alle oordragte te saai</string>
     <string name="cloud_download_aborted_on_mobile_data">Huidige instelling verhoed dat aflaai wanneer dit nie op Wi-Fi-netwerk is nie</string>
     <string name="filter_ellipsis">Filter…</string>
@@ -68,7 +67,6 @@
     <string name="wifi_seeding_has_been_turned_off">Geen Wi-Fi beskikbaar nie, saai is afgeskakel</string>
     <string name="pause_torrent_menu_action">Pouse</string>
     <string name="storage_preference_title">Kies bergingsplek</string>
-    <string name="azureus_manager_item_allocating">Toekenning</string>
     <string name="app_shutdown_dlg_message">Dit sal alle oordragte en agtergronddienste afsluit. Is jy seker?</string>
     <string name="show_transfers_on_download_start">Wys oordragte op aflaai begin</string>
     <string name="send_feedback">Stuur terugvoering</string>

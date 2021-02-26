@@ -236,7 +236,6 @@ public class MyFilesFragment extends AbstractFragment implements LoaderCallbacks
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.fragment_my_files_menu_filter:
-                return true;
             case R.id.fragment_my_files_menu_checkbox:
                 return true;
             default:
@@ -452,7 +451,7 @@ public class MyFilesFragment extends AbstractFragment implements LoaderCallbacks
 
     private void updateHeaderPostTask(byte fileType, int numFiles) {
         if (header != null && fileType == lastFileType) {
-            headerTotal.setText("(" + String.valueOf(numFiles) + ")");
+            headerTotal.setText("(" + numFiles + ")");
         }
         if (adapter == null) {
             clickFileTypeTab(lastFileType);

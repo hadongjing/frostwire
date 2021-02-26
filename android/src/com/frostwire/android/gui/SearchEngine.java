@@ -26,12 +26,16 @@ import com.frostwire.search.archiveorg.ArchiveorgSearchPerformer;
 import com.frostwire.search.eztv.EztvSearchPerformer;
 import com.frostwire.search.frostclick.FrostClickSearchPerformer;
 import com.frostwire.search.frostclick.UserAgent;
+import com.frostwire.search.glotorrents.GloTorrentsSearchPerformer;
+import com.frostwire.search.idope.IdopeSearchPerformer;
 import com.frostwire.search.limetorrents.LimeTorrentsSearchPerformer;
 import com.frostwire.search.magnetdl.MagnetDLSearchPerformer;
 import com.frostwire.search.nyaa.NyaaSearchPerformer;
+import com.frostwire.search.one337x.One337xSearchPerformer;
 import com.frostwire.search.soundcloud.SoundcloudSearchPerformer;
 import com.frostwire.search.torlock.TorLockSearchPerformer;
 import com.frostwire.search.torrentdownloads.TorrentDownloadsSearchPerformer;
+import com.frostwire.search.torrentparadise.TorrentParadiseSearchPerformer;
 import com.frostwire.search.torrentz2.Torrentz2SearchPerformer;
 import com.frostwire.search.tpb.TPBSearchPerformer;
 import com.frostwire.search.yify.YifySearchPerformer;
@@ -149,7 +153,7 @@ public abstract class SearchEngine {
     public static final SearchEngine SOUNCLOUD = new SearchEngine("Soundcloud", Constants.PREF_KEY_SEARCH_USE_SOUNDCLOUD) {
         @Override
         public SearchPerformer getPerformer(long token, String keywords) {
-            return new SoundcloudSearchPerformer("api.sndcdn.com", token, keywords, DEFAULT_TIMEOUT);
+            return new SoundcloudSearchPerformer("api-v2.sndcdn.com", token, keywords, DEFAULT_TIMEOUT);
         }
     };
 
@@ -198,7 +202,7 @@ public abstract class SearchEngine {
     public static final SearchEngine EZTV = new SearchEngine("Eztv", Constants.PREF_KEY_SEARCH_USE_EZTV) {
         @Override
         public SearchPerformer getPerformer(long token, String keywords) {
-            return new EztvSearchPerformer("eztv.io", token, keywords, DEFAULT_TIMEOUT);
+            return new EztvSearchPerformer("eztv.re", token, keywords, DEFAULT_TIMEOUT);
         }
     };
 
@@ -243,7 +247,43 @@ public abstract class SearchEngine {
     public static final SearchEngine YIFY = new SearchEngine("Yify", Constants.PREF_KEY_SEARCH_USE_YIFY) {
         @Override
         public SearchPerformer getPerformer(long token, String keywords) {
-            return new YifySearchPerformer("www.yify-torrent.org", token, keywords, DEFAULT_TIMEOUT);
+            return new YifySearchPerformer("yify-torrent.cc", token, keywords, DEFAULT_TIMEOUT);
+        }
+    };
+
+    public static final SearchEngine ONE337X = new SearchEngine("1337x", Constants.PREF_KEY_SEARCH_USE_ONE337X) {
+        private String domainName = null;
+
+        @Override
+        public SearchPerformer getPerformer(long token, String keywords) {
+            if (domainName == null) {
+                throw new RuntimeException("check your logic, this search performer has no domain name ready");
+            }
+            return new One337xSearchPerformer(domainName, token, keywords, DEFAULT_TIMEOUT);
+        }
+
+        protected void postInitWork() {
+            new Thread(() -> {
+                HttpClient httpClient = HttpClientFactory.getInstance(HttpClientFactory.HttpContext.SEARCH);
+                String[] mirrors = {
+                        "www.1377x.to"
+                };
+                domainName = UrlUtils.getFastestMirrorDomain(httpClient, mirrors, 7000);
+            }
+            ).start();
+        }
+
+        @Override
+        protected boolean isReady() {
+            return domainName != null;
+        }
+    };
+
+    public static final SearchEngine IDOPE = new SearchEngine("Idope", Constants.PREF_KEY_SEARCH_USE_IDOPE) {
+
+        @Override
+        public SearchPerformer getPerformer(long token, String keywords) {
+            return new IdopeSearchPerformer(token, keywords, DEFAULT_TIMEOUT);
         }
     };
 
@@ -263,10 +303,28 @@ public abstract class SearchEngine {
         }
     };
 
+
+    public static final SearchEngine TORRENT_PARADISE = new SearchEngine("TorrentParadise", Constants.PREF_KEY_SEARCH_USE_TORRENT_PARADISE) {
+        @Override
+        public SearchPerformer getPerformer(long token, String keywords) {
+            return new TorrentParadiseSearchPerformer(token, keywords, DEFAULT_TIMEOUT);
+        }
+    };
+
+    public static final SearchEngine GLOTORRENTS = new SearchEngine("GloTorrents", Constants.PREF_KEY_SEARCH_USE_GLOTORRENTS) {
+        @Override
+        public SearchPerformer getPerformer(long token, String keywords) {
+            return new GloTorrentsSearchPerformer(token, keywords, DEFAULT_TIMEOUT);
+        }
+    };
+
     private static final List<SearchEngine> ALL_ENGINES = Arrays.asList(
+            TORRENT_PARADISE,
             MAGNETDL,
             TORRENTZ2,
             YIFY,
+            ONE337X,
+            IDOPE,
             FROSTCLICK,
             ZOOQLE,
             TPB,
@@ -276,5 +334,6 @@ public abstract class SearchEngine {
             TORRENTDOWNLOADS,
             LIMETORRENTS,
             NYAA,
-            EZTV);
+            EZTV,
+            GLOTORRENTS);
 }

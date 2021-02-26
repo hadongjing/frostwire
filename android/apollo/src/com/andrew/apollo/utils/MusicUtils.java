@@ -204,8 +204,7 @@ public final class MusicUtils {
         final Uri mUri = ContentUris.withAppendedId(
                 MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
                 playlistId);
-        int deleted = activity.getContentResolver().delete(mUri, null, null);
-        return deleted;
+        return activity.getContentResolver().delete(mUri, null, null);
     }
 
     public static boolean isPaused() {
@@ -262,6 +261,10 @@ public final class MusicUtils {
             }
         }
 
+        @Override
+        public void onNullBinding(ComponentName name) {
+            LOG.warn("onNullBinding(componentName=" + name + ")");
+        }
     }
 
     /**
@@ -1128,7 +1131,7 @@ public final class MusicUtils {
         }
 
         if (MusicPlaybackService.getMusicPlayerHandler() != null &&
-            MusicPlaybackService.getMusicPlayerHandler().getThread() != Thread.currentThread()) {
+                MusicPlaybackService.getMusicPlayerHandler().getLooperThread() != Thread.currentThread()) {
             MusicPlaybackService.getMusicPlayerHandler().safePost(() -> addToPlaylist(context, ids, playlistid));
             return;
         }
@@ -1157,7 +1160,10 @@ public final class MusicUtils {
             //TODO: Check this portion of code, seems is doing extra work.
             for (int offSet = 0; offSet < size; offSet += 1000) {
                 makeInsertItems(ids, offSet, 1000, base);
-                numinserted += resolver.bulkInsert(uri, mContentValuesCache);
+                try {
+                    numinserted += resolver.bulkInsert(uri, mContentValuesCache);
+                } catch (Throwable ignored) {
+                }
             }
             if (updateQueue) {
                 addToQueue(context, ids);
@@ -1210,9 +1216,13 @@ public final class MusicUtils {
         }
         final Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
         final ContentResolver resolver = context.getContentResolver();
-        resolver.delete(uri, Playlists.Members.AUDIO_ID + " = ? ", new String[]{
-                Long.toString(id)
-        });
+        try {
+            resolver.delete(uri, Playlists.Members.AUDIO_ID + " = ? ", new String[]{
+                    Long.toString(id)
+            });
+        } catch (IllegalAccessError ignored) {
+            // could not acquire provider for uri
+        }
     }
 
     /**
@@ -1264,9 +1274,8 @@ public final class MusicUtils {
         };
 
         final String selection = BaseColumns._ID + "=" + id;
-        Cursor cursor = resolver.query(contentUri, projection,
-                selection, null, null);
-        try {
+        try (Cursor cursor = resolver.query(contentUri, projection,
+                selection, null, null)) {
             if (cursor != null && cursor.getCount() == 1) {
                 cursor.moveToFirst();
                 RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, uri);
@@ -1278,10 +1287,6 @@ public final class MusicUtils {
             }
         } catch (Throwable ignored) {
             UIUtils.showLongMessage(context, R.string.ringtone_not_set);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
         }
     }
 
@@ -1576,7 +1581,11 @@ public final class MusicUtils {
      * @return The last album name played by an artist
      */
     public static String getLastAlbumForArtist(final Context context, final String artistName) {
-        return RecentStore.getInstance(context).getAlbumName(artistName);
+        RecentStore recentStore = RecentStore.getInstance(context);
+        if (recentStore == null) {
+            return null;
+        }
+        return recentStore.getAlbumName(artistName);
     }
 
     /**
@@ -1677,9 +1686,15 @@ public final class MusicUtils {
                 final long id = c.getLong(0);
                 removeTrack(id);
                 // Remove from the favorites playlist.
-                FavoritesStore.getInstance(context).removeItem(id);
+                FavoritesStore favoritesStore = FavoritesStore.getInstance(context);
+                if (favoritesStore != null) {
+                    favoritesStore.removeItem(id);
+                }
                 // Remove any items in the recent's database
-                RecentStore.getInstance(context).removeItem(id);
+                RecentStore recentStore = RecentStore.getInstance(context);
+                if (recentStore != null) {
+                    recentStore.removeItem(id);
+                }
                 // Remove from all remaining playlists.
                 removeSongFromAllPlaylists(context, id);
                 c.moveToNext();

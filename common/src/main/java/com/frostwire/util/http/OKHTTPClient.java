@@ -1,6 +1,6 @@
 /*
  * Created by Angel Leon (@gubatron), Alden Torres (aldenml)
- * Copyright (c) 2011-2019, FrostWire(R). All rights reserved.
+ * Copyright (c) 2011-2020, FrostWire(R). All rights reserved.
 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * @author aldenml
  */
 public class OKHTTPClient extends AbstractHttpClient {
-    public static final ConnectionPool CONNECTION_POOL = new ConnectionPool(5, 10, TimeUnit.SECONDS);
+    public static final ConnectionPool CONNECTION_POOL = new ConnectionPool(5, 30, TimeUnit.SECONDS);
     private static final Logger LOG = Logger.getLogger(OKHTTPClient.class);
     private final ThreadPool pool;
 
@@ -67,7 +67,7 @@ public class OKHTTPClient extends AbstractHttpClient {
 
     public static OkHttpClient.Builder configNullSsl(OkHttpClient.Builder b) {
         b.followSslRedirects(true);
-        b.hostnameVerifier(Ssl.nullHostnameVerifier());
+        b.hostnameVerifier(Ssl.fwHostnameVerifier());
         b.sslSocketFactory(Ssl.nullSocketFactory(), Ssl.nullTrustManager());
         ConnectionSpec spec1 = cipherSpec(ConnectionSpec.CLEARTEXT);
         ConnectionSpec spec2 = cipherSpec(ConnectionSpec.COMPATIBLE_TLS);
@@ -123,10 +123,10 @@ public class OKHTTPClient extends AbstractHttpClient {
     }
 
     @Override
-    public String get(String url, int timeout, String userAgent, String referrer, String cookie, Map<String, String> customHeaders) throws IOException {
+    public String get(String url, int timeoutMillis, String userAgent, String referrer, String cookie, Map<String, String> customHeaders) throws IOException {
         String result = null;
         final OkHttpClient.Builder okHttpClient = newOkHttpClient();
-        final Request.Builder builder = prepareRequestBuilder(okHttpClient, url, timeout, userAgent, referrer, cookie);
+        final Request.Builder builder = prepareRequestBuilder(okHttpClient, url, timeoutMillis, userAgent, referrer, cookie);
         addCustomHeaders(customHeaders, builder);
         ResponseBody responseBody = null;
         try {
@@ -207,7 +207,7 @@ public class OKHTTPClient extends AbstractHttpClient {
         canceled = false;
         final OkHttpClient.Builder okHttpClient = newOkHttpClient();
         final Request.Builder builder = prepareRequestBuilder(okHttpClient, url, timeout, userAgent, null, null);
-        final RequestBody requestBody = RequestBody.create(MediaType.parse(postContentType), postData);
+        final RequestBody requestBody = RequestBody.create(postData, MediaType.parse(postContentType));
         prepareOkHttpClientForPost(okHttpClient, gzip);
         builder.post(requestBody);
         return getPostSyncResponse(builder);

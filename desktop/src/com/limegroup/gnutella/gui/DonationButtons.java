@@ -1,6 +1,6 @@
 /*
  * Created by Angel Leon (@gubatron), Alden Torres (aldenml)
- * Copyright (c) 2011-2017, FrostWire(R). All rights reserved.
+ * Copyright (c) 2011-2021, FrostWire(R). All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 package com.limegroup.gnutella.gui;
 
 import net.miginfocom.swing.MigLayout;
-import org.limewire.util.OSUtils;
+import com.frostwire.util.OSUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,21 +29,20 @@ import java.awt.*;
  * @author aldenml
  */
 class DonationButtons extends JPanel {
-    private static final Color FONT_COLOR = new Color(0x1f3545);
+    private static final Color FONT_COLOR = new Color(0x1F3545);
 
     DonationButtons() {
         setLayout(new MigLayout("insets 0, nogrid, ltr, gapx 6", "", "[align center]"));
         add(createDonateLabel());
         //MigLayout lesson: Using px explicitly as the unit does make a big difference.
         int bitcoinWidth = (OSUtils.isLinux()) ? 52 : 40;
-        int paypalWidth = (OSUtils.isLinux()) ? 52 : 46;
-        add(new DonationButton("BTC", "http://www.frostwire.com/bitcoin", I18n.tr("Support FrostWire development with a Bitcoin donation")), "w " + bitcoinWidth + "px!, h 18px!");
-        add(new DonationButton("BCH", "http://www.frostwire.com/bitcoin-cash", I18n.tr("Support FrostWire development with a Bitcoin Cash donation")), "w " + bitcoinWidth + "px!, h 18px!");
-        add(new DonationButton("ETH", "http://www.frostwire.com/ethereum", I18n.tr("Support FrostWire development with an Ether donation")), "w " + bitcoinWidth + "px!, h 18px!");
-        add(new DonationButton("DASH", "http://www.frostwire.com/dash", I18n.tr("Support FrostWire development with a Dash donation")), "w " + bitcoinWidth + "px!, h 18px!");
-        add(new DonationButton("LTC", "http://www.frostwire.com/litecoin", I18n.tr("Support FrostWire development with a Litecoin donation")), "w " + bitcoinWidth + "px!, h 18px!");
-        add(new DonationButton("ZEC", "http://www.frostwire.com/zcash", I18n.tr("Support FrostWire development with a ZCash donation")), "w " + bitcoinWidth + "px!, h 18px!");
-        add(new DonationButton("PayPal", "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XNBZ6GMVTDWQQ", I18n.tr("Support FrostWire development with a Paypal donation")), "w " + paypalWidth + "px!, h 18px!");
+        int usdErc20Width = (OSUtils.isLinux()) ? 78 : 68;
+        add(new DonationButton("$5", "https://www.frostwire.com/?id=donate&amt=5", I18n.tr("Support FrostWire development with a $1 donation")), "w " + bitcoinWidth + "px!, h 18px!");
+        add(new DonationButton("$10", "https://www.frostwire.com/?id=donate&amt=10", I18n.tr("Support FrostWire development with a $1 donation")), "w " + bitcoinWidth + "px!, h 18px!");
+        add(new DonationButton("$x", "https://www.frostwire.com/?id=donate&amt=open", I18n.tr("Support FrostWire development with a $1 donation")), "w " + bitcoinWidth + "px!, h 18px!");
+        add(new DonationButton("BTC", "https://www.frostwire.com/bitcoin", I18n.tr("Support FrostWire development with a Bitcoin donation")), "w " + bitcoinWidth + "px!, h 18px!");
+        add(new DonationButton("ETH", "https://www.frostwire.com/ethereum", I18n.tr("Support FrostWire development with an Ether donation")), "w " + bitcoinWidth + "px!, h 18px!");
+        add(new DonationButton("USD*/DAI", "https://www.frostwire.com/ethereum", I18n.tr("Support FrostWire development with a Dash donation")), "w " + usdErc20Width + "px!, h 18px!");
     }
 
     private JLabel createDonateLabel() {

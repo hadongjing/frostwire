@@ -29,7 +29,7 @@ import com.limegroup.gnutella.gui.search.MagnetClipboardListener;
 import com.limegroup.gnutella.settings.ApplicationSettings;
 import net.miginfocom.swing.MigLayout;
 import org.limewire.setting.SettingsGroupManager;
-import org.limewire.util.OSUtils;
+import com.frostwire.util.OSUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -186,14 +186,37 @@ public final class MainFrame {
         if (state == Frame.NORMAL) {
             // save the screen size and location
             Dimension dim = GUIMediator.getAppSize();
-            if ((dim.height > 100) && (dim.width > 100)) {
-                Point loc = GUIMediator.getAppLocation();
-                ApplicationSettings.APP_WIDTH.setValue(dim.width);
-                ApplicationSettings.APP_HEIGHT.setValue(dim.height);
-                ApplicationSettings.WINDOW_X.setValue(loc.x);
-                ApplicationSettings.WINDOW_Y.setValue(loc.y);
-                ApplicationSettings.MAXIMIZE_WINDOW.setValue(false);
+
+            int minAppWidth = ApplicationSettings.APP_WIDTH.getDefaultValue();
+            int minAppHeight = ApplicationSettings.APP_HEIGHT.getDefaultValue();
+            int appWidth = dim.width;
+            int appHeight = dim.height;
+
+            boolean forceMinimumDimensions = false;
+
+            if (appWidth < minAppWidth) {
+                appWidth = minAppWidth;
+                forceMinimumDimensions = true;
             }
+
+            if (appHeight < minAppHeight) {
+                appHeight = minAppHeight;
+                forceMinimumDimensions = true;
+            }
+
+            if (forceMinimumDimensions) {
+                FRAME.setSize(new Dimension(appWidth, appHeight));
+                FRAME.getContentPane().setSize(new Dimension(appWidth, appHeight));
+                FRAME.getContentPane().setPreferredSize(new Dimension(appWidth, appHeight));
+            }
+
+            Point loc = GUIMediator.getAppLocation();
+            ApplicationSettings.APP_WIDTH.setValue(appWidth);
+            ApplicationSettings.APP_HEIGHT.setValue(appHeight);
+            ApplicationSettings.WINDOW_X.setValue(loc.x);
+            ApplicationSettings.WINDOW_Y.setValue(loc.y);
+            ApplicationSettings.MAXIMIZE_WINDOW.setValue(false);
+
         } else if ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) {
             ApplicationSettings.MAXIMIZE_WINDOW.setValue(true);
             if (lastState != null && lastState.time == System.currentTimeMillis()) {
@@ -344,7 +367,8 @@ public final class MainFrame {
         Component comp = getCurrentTabComponent();
         if (comp != null) {
             for (Tabs t : TABS.keySet()) {
-                if (TABS.get(t).getComponent().equals(comp)) {
+                JComponent tabComponent = TABS.get(t).getComponent();
+                if (comp.equals(tabComponent)) {
                     return t;
                 }
             }

@@ -37,9 +37,11 @@ import android.media.MediaPlayer;
 import android.media.RemoteControlClient;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
@@ -86,6 +88,7 @@ public class MusicPlaybackService extends JobIntentService {
     private static final boolean D = BuildConfig.DEBUG;
 
     private static MusicPlaybackService INSTANCE = null;
+    private static final LocalBinder binder = new LocalBinder();
 
     /**
      * Indicates that the music has paused or resumed
@@ -421,9 +424,9 @@ public class MusicPlaybackService extends JobIntentService {
     // playlists
     private int mCardId;
 
-    private int mPlayListLen = 0;
+    private volatile int mPlayListLen = 0;
 
-    private int mPlayPos = -1;
+    private volatile int mPlayPos = -1;
 
     private int mNextPlayPos = -1;
 
@@ -561,6 +564,17 @@ public class MusicPlaybackService extends JobIntentService {
             setupMPlayerHandler();
             mPlayerHandler.safePost(this::initService);
         }
+    }
+
+    private static class LocalBinder extends Binder {
+        MusicPlaybackService getMusicPlaybackService() {
+            return MusicPlaybackService.INSTANCE;
+        }
+    }
+
+    @Override
+    public IBinder onBind(@NonNull Intent intent) {
+        return binder;
     }
 
     @Override
@@ -706,6 +720,7 @@ public class MusicPlaybackService extends JobIntentService {
         } catch (Throwable ignored) {
         }
         INSTANCE = null;
+        mServiceInUse = false;
     }
 
     public void handleCommandIntent(Intent intent) {
@@ -1128,6 +1143,11 @@ public class MusicPlaybackService extends JobIntentService {
         if (removeNotification) {
             updateRemoteControlClient(PLAYSTATE_STOPPED);
             stopForeground(true);
+
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP ||
+                    Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1) {
+                stopService(new Intent(this, MusicPlaybackService.class));
+            }
         } else {
             stopForeground(isStopped);
         }
@@ -1331,8 +1351,19 @@ public class MusicPlaybackService extends JobIntentService {
         }
         stopPlayer();
 
-        mPlayPos = Math.min(mPlayPos, mPlayList.length - 1);
-        updateCursor(mPlayList[mPlayPos]);
+        long trackId = -1;
+        synchronized (mPlayList) {
+            mPlayPos = Math.min(mPlayPos, mPlayList.length - 1);
+            try {
+                trackId = mPlayList[mPlayPos];
+            } catch (ArrayIndexOutOfBoundsException t) {
+                LOG.warn("Aborting openCurrentAndMaybeNext(openNext=" + openNext + ")");
+                LOG.error(t.getMessage(), t);
+                return false;
+            }
+        }
+        updateCursor(trackId);
+
         boolean hasOpenCursor = mCursor != null && !mCursor.isClosed();
         if (!hasOpenCursor) {
             if (openNext) {
@@ -1395,10 +1426,7 @@ public class MusicPlaybackService extends JobIntentService {
      */
     private int getNextPosition(final boolean force, final boolean shuffleEnabled) {
         if (!force && mRepeatMode == REPEAT_CURRENT) {
-            if (mPlayPos < 0) {
-                return 0;
-            }
-            return mPlayPos;
+            return Math.max(mPlayPos, 0);
         } else if (shuffleEnabled) {
             if (mPlayListLen <= 0) {
                 return -1;
@@ -1822,7 +1850,7 @@ public class MusicPlaybackService extends JobIntentService {
             Uri uri = Uri.parse(path);
             long id = -1;
             try {
-                id = Long.valueOf(uri.getLastPathSegment());
+                id = Long.parseLong(uri.getLastPathSegment());
             } catch (NumberFormatException ex) {
                 // Ignore
             }
@@ -2367,11 +2395,11 @@ public class MusicPlaybackService extends JobIntentService {
     public void gotoNext(final boolean force) {
         if (D) LOG.info("Going to next track");
 
+        int currentRepeatMode = mRepeatMode;
         if (force && mRepeatMode == REPEAT_CURRENT) {
             setRepeatMode(REPEAT_ALL);
         }
 
-        //synchronized (this) {
         if (mPlayListLen <= 0) {
             if (D) LOG.info("No play queue");
             return;
@@ -2381,9 +2409,12 @@ public class MusicPlaybackService extends JobIntentService {
         mPlayPos = pos;
         if (openCurrentAndNext()) {
             play();
+            if (force) {
+                // make sure repeat mode is restored
+                setRepeatMode(currentRepeatMode);
+            }
             notifyChange(META_CHANGED);
         }
-        //}
     }
 
     public void gotoPrev() {
@@ -2675,12 +2706,12 @@ public class MusicPlaybackService extends JobIntentService {
             super(looper);
         }
 
-        public Thread getThread() {
+        public Thread getLooperThread() {
             return getLooper().getThread();
         }
 
         public void safePost(@NonNull Runnable r) {
-            if (Thread.currentThread() == getThread()) {
+            if (Thread.currentThread() == getLooperThread()) {
                 try {
                     r.run();
                 } catch (Throwable t) {

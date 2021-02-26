@@ -22,7 +22,7 @@ import com.limegroup.gnutella.gui.GUIMediator;
 import com.limegroup.gnutella.gui.I18n;
 import com.limegroup.gnutella.util.FrostWireUtils;
 import org.limewire.util.CommonUtils;
-import org.limewire.util.OSUtils;
+import com.frostwire.util.OSUtils;
 
 import javax.swing.*;
 import java.io.*;
@@ -83,6 +83,10 @@ public final class UpdateManager implements Serializable {
      * Starts an Update Task in <secondsAfter> seconds after.
      */
     static void scheduleUpdateCheckTask(final int secondsAfter, final boolean force) {
+        if (OSUtils.isWindowsAppStoreInstall()){
+            System.out.println("UpdateManager.scheduleUpdateCheckTask() - aborted. Updates are done via Windows App Store for this distribution");
+            return;
+        }
         // Uses the UpdateManager to check for updates. Then kills the timer
         Runnable checkForUpdatesTask = () -> {
             //System.out.println("UpdateManager.scheduleUpdateCheckTask() - about to check for update in " + secondsAfter + " seconds");
@@ -315,8 +319,28 @@ public final class UpdateManager implements Serializable {
         options[OPTION_OPEN_URL] = I18n.tr("Go to webpage");
         final int finalOptionType = optionType;
         final String[] finalOptions = options;
+
+        String updateMessage = "";
+
+        if (msg.getMessage() != null && msg.getMessage().length() > 0) {
+            updateMessage = msg.getMessage(); //value="..."
+        }
+
+        // if msg.getMessageInstallerReady() exists it will be used instead of message.
+        if (msg.getMessageInstallerReady() != null && msg.getMessageInstallerReady().length() > 0) {
+            updateMessage = msg.getMessageInstallerReady(); //valueInstallerReady="..."
+        }
+
+        final String finalUpdateMessage = updateMessage;
+
         SwingUtilities.invokeLater(() -> {
-            int result = JOptionPane.showOptionDialog(null, msg.getMessage(), title, finalOptionType, JOptionPane.INFORMATION_MESSAGE, null, // Icon
+            int result = JOptionPane.showOptionDialog(
+                    null,
+                    finalUpdateMessage,
+                    title,
+                    finalOptionType,
+                    JOptionPane.INFORMATION_MESSAGE,
+                    null, // Icon
                     finalOptions, // Options[]
                     null); // Initial value (Object)
             if (result == OPTION_OPEN_URL) {

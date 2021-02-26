@@ -2,7 +2,7 @@
 <!--
 /*
  * Created by Angel Leon (@gubatron), Alden Torres (aldenml)
- * Copyright (c) 2011-2016, FrostWire(R). All rights reserved.
+ * Copyright (c) 2011-2020, FrostWire(R). All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
     <string name="tip_touch_tags_to"><![CDATA[ <b>Hinweis:</b> Berühren angewendet Tags]]></string>
     <string name="unprotected_connections_visibility_bullet_html"><![CDATA[ <b>Ihre Privatsphäre ist ein Grundrecht</b>. Eine ungeschützte Verbindung bedeutet, dass alles, was Sie online tun, einschließlich <b>Downloads, Suchen, Nachrichten</b>, von jedem in Ihrem Netzwerk überwacht und abgefangen werden kann, z. Internet Service Provider, Hacker, Regierungen.<br><br><b>Wir empfehlen DRINGLICH, einen VPN-Dienst zu verwenden</b>. <br> Hier sind einige Optionen, die einen zuverlässigen Service bieten und gut mit FrostWire funktionieren:]]></string>
     <string name="protected_connections_visibility_bullet_html"><![CDATA[ Sie sind über ein VPN mit dem Internet verbunden. <br> <br> Wenn Sie es nicht bereits sind, empfehlen wir Ihnen, einen der folgenden Dienste zu verwenden, um Ihre Verbindung zu verschlüsseln und <b>Ihre Privatsphäre zu schützen</b>. ]]></string>
-    <string name="application_label">FrostWire</string>
     <string name="activity_preferences_name">Einstellungen</string>
     <string name="exit">Beenden</string>
     <string name="search_label">Suche</string>
@@ -83,6 +82,8 @@
     <string name="use_torrentz2">Benutze Torrentz2</string>
     <string name="use_eztv">Benutze Eztv</string>
     <string name="use_yify">Benutze Yify</string>
+    <string name="use_one337x">Benutze 1337x</string>
+    <string name="use_idope">Benutze Idope</string>
     <string name="use_frostclick">Benutze FrostClick</string>
     <string name="use_archiveorg">Benutze Archive.org</string>
     <string name="use_soundcloud">Benutze Soundcloud.com</string>
@@ -92,7 +93,6 @@
     <string name="yes_no_cancel_delete_transfer_question">Bist du sicher, dass du diesen Download abbrechen willst (Schon heruntergeladene Daten werden gelöscht)?</string>
     <string name="cancel_transfer">Übertragung abbrechen</string>
     <string name="azureus_peer_manager_status_finished">Fertig</string>
-    <string name="azureus_manager_item_allocating">Wird zugewiesen</string>
     <string name="azureus_manager_item_downloading">Wird heruntergeladen</string>
     <string name="azureus_manager_item_seeding">Seeding</string>
     <string name="azureus_manager_item_stopped">Gestoppt</string>
@@ -258,6 +258,8 @@
     <string name="device_storage">Geräte-Storage</string>
     <string name="use_limetorrents">Benutze Limetorrents</string>
     <string name="use_magnetdl">Benutze MagnetDL</string>
+    <string name="use_torrent_paradise">Benutze TorrentParadise</string>
+    <string name="use_glotorrents">Benutze GloTorrents</string>
     <string name="error_no_internet_connection">Fehler: Überprüfen Internetverbindung</string>
     <string name="why_we_need_storage_permissions">Warum brauchen wir Speicherberechtigungen.</string>
     <string name="invalid_filename">Ungültiger Dateiname</string>
@@ -411,6 +413,7 @@
     <string name="vpn_find_out_more">Finde mehr heraus</string>
     <string name="vpn_suggestion_nordvpn">NORDVPN \n Kostenlose 7-Tage-Testversion</string>
     <string name="contact_us">Kontaktiere uns</string>
+    <string name="community">Gemeinschaft</string>
     <string name="use_nyaa">Benutze Nyaa</string>
     <string name="free">Kostenlos</string>
 </resources>

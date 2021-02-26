@@ -27,7 +27,6 @@
     <string name="your_installation_is_complete">שההתקנה הושלמה.</string>
     <string name="error_connection_timed_out">שגיאה: חיבור הופסק/ירד. נסה שוב.</string>
     <string name="azureus_manager_item_seeding">מתזמן</string>
-    <string name="application_label">FrostWire</string>
     <string name="all_free_downloads">כל ההורדות בחינם</string>
     <string name="torrent_max_download_speed">מהירות הורדה מקסימלית</string>
     <string name="torrent_max_peers">Peers המקסימלי</string>
@@ -61,7 +60,6 @@
     <string name="wifi_seeding_has_been_turned_off">אין Wi-Fi זמין, מתזמן כובתה</string>
     <string name="pause_torrent_menu_action">הַפסָקָה</string>
     <string name="storage_preference_title">בחר מקום שמירה</string>
-    <string name="azureus_manager_item_allocating">הקצאה</string>
     <string name="app_shutdown_dlg_message">כיבוי רצון זה כל העברות ושירותי רקע. האם אתה בטוח?</string>
     <string name="show_transfers_on_download_start">העברות הצג על התחל הורדה</string>
     <string name="send_feedback">שלח משוב</string>

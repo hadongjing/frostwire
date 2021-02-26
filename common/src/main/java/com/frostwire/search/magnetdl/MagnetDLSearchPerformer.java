@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,8 +18,8 @@
 package com.frostwire.search.magnetdl;
 
 import com.frostwire.regex.Pattern;
+import com.frostwire.search.SearchError;
 import com.frostwire.search.SearchMatcher;
-import com.frostwire.search.limetorrents.LimeTorrentsSearchResult;
 import com.frostwire.search.torrent.TorrentSearchPerformer;
 import com.frostwire.util.Logger;
 
@@ -32,6 +32,8 @@ import java.util.List;
 public class MagnetDLSearchPerformer extends TorrentSearchPerformer {
     private static Logger LOG = Logger.getLogger(MagnetDLSearchPerformer.class);
     private final Pattern pattern;
+    private final String nonEncodedKeywords;
+    private int minSeeds = 1;
     private static final String SEARCH_RESULT_PAGE_REGEX =
             "(?is)<td class=\"m\"><a href=\"(?<magnet>.*?)\" title=.*?<img.*?</td>" +
                     "<td class=\"n\"><a href=\"(?<detailUrl>.*?)\" title=\"(?<title>.*?)\">.*?</td>" +
@@ -40,13 +42,19 @@ public class MagnetDLSearchPerformer extends TorrentSearchPerformer {
                     "<td class=\"s\">(?<seeds>.*?)</td>";//.*</td><tr><td class=\"d\" colspan=\"8\"></td></tr>";
 
     public MagnetDLSearchPerformer(long token, String keywords, int timeout) {
-        super("www.magnetdl.com", token, keywords, timeout, 1, 1);
+        super("magnetdl.com", token, keywords, timeout, 1, 0);
+        nonEncodedKeywords = keywords;
         pattern = Pattern.compile(SEARCH_RESULT_PAGE_REGEX);
+    }
+
+    public void setMinSeeds(int minSeeds) {
+        this.minSeeds = minSeeds;
     }
 
     @Override
     protected String getUrl(int page, String encodedKeywords) {
-        String transformedKeywords = encodedKeywords.replace("%20", "-");
+        //disregard encoded keywords when it comes to the URL
+        String transformedKeywords = nonEncodedKeywords.replace("%20", "-");
         return "https://" + getDomainName() + "/" + transformedKeywords.subSequence(0,1) + "/" + transformedKeywords + "/";
     }
 
@@ -54,7 +62,7 @@ public class MagnetDLSearchPerformer extends TorrentSearchPerformer {
     protected List<MagnetDLSearchResult> searchPage(String page) {
         final String HTML_PREFIX_MARKER = "<tbody>";
         int htmlPrefixIndex = page.indexOf(HTML_PREFIX_MARKER) + HTML_PREFIX_MARKER.length();
-        final String HTML_SUFFIX_MARKER = "<td id=\"pages\"";
+        final String HTML_SUFFIX_MARKER = "Download Search Help";
         int htmlSuffixIndex = page.indexOf(HTML_SUFFIX_MARKER);
 
         String reducedHtml = page.substring(htmlPrefixIndex, htmlSuffixIndex > 0 ? htmlSuffixIndex : page.length() - htmlPrefixIndex);
@@ -72,15 +80,20 @@ public class MagnetDLSearchPerformer extends TorrentSearchPerformer {
             }
             if (matcherFound) {
                 MagnetDLSearchResult sr = fromMatcher(matcher);
-                if (sr.getSeeds() > 0) {
+                if (sr.getSeeds() >= minSeeds) {
+                    LOG.info("Adding a new search result -> " + sr.getDisplayName() + ":" + sr.getSize() + ":" + sr.getTorrentUrl());
                     results.add(sr);
+                } else {
+                    LOG.info("Not adding 0 seed search result -> " + sr.getDisplayName() + ":" + sr.getSize() + ":" + sr.getTorrentUrl());
                 }
-                LOG.info("Adding a new search result -> " + sr.getDisplayName() + ":" + sr.getSize() + ":" + sr.getTorrentUrl());
             } else {
-                LOG.warn("LimeTorrentsSearchPerformer::searchPage(String page): search matcher broken. Please notify at https://github.com/frostwire/frostwire/issues/new");
+                LOG.warn("MagnetDLSearchPerformer::searchPage(String page): search matcher broken. Please notify at https://github.com/frostwire/frostwire/issues/new");
                 LOG.warn("========");
                 LOG.warn(reducedHtml);
                 LOG.warn("========");
+                if (getListener() != null && results.size() < 5) {
+                    getListener().onError(getToken(),new SearchError(0, "Search Matcher Broken"));
+                }
             }
         } while (matcherFound && !isStopped() && results.size() <= MAX_RESULTS);
         return results;

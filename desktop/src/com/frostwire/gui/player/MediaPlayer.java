@@ -1,31 +1,32 @@
 /*
  * Created by Angel Leon (@gubatron), Alden Torres (aldenml)
- * Copyright (c) 2011-2016, FrostWire(R). All rights reserved.
+ * Copyright (c) 2011-2020 FrostWire(R). All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.frostwire.gui.player;
 
 import com.frostwire.alexandria.Playlist;
 import com.frostwire.alexandria.PlaylistItem;
+import com.frostwire.concurrent.concurrent.ExecutorsHelper;
 import com.frostwire.gui.library.LibraryMediator;
 import com.frostwire.gui.library.tags.TagsReader;
 import com.frostwire.gui.mplayer.MPlayer;
 import com.frostwire.mp4.IsoFile;
 import com.frostwire.mp4.MovieHeaderBox;
 import com.frostwire.mplayer.MediaPlaybackState;
+import com.frostwire.util.OSUtils;
 import com.frostwire.util.StringUtils;
 import com.limegroup.gnutella.MediaType;
 import com.limegroup.gnutella.gui.GUIMediator;
@@ -34,9 +35,7 @@ import com.limegroup.gnutella.gui.RefreshListener;
 import com.limegroup.gnutella.settings.PlayerSettings;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.limewire.concurrent.ExecutorsHelper;
 import org.limewire.util.FileUtils;
-import org.limewire.util.OSUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,7 +82,7 @@ public abstract class MediaPlayer implements RefreshListener, MPlayerUIEventList
         playExecutor = ExecutorsHelper.newProcessingQueue("AudioPlayer-PlayExecutor");
         String playerPath;
         playerPath = getPlayerPath();
-        MPlayer.initialise(new File(playerPath));
+        MPlayer.initialize(new File(playerPath));
         mplayer = new MPlayer();
         mplayer.addPositionListener(this::notifyProgress);
         mplayer.addStateListener(newState -> {
@@ -216,6 +215,23 @@ public abstract class MediaPlayer implements RefreshListener, MPlayerUIEventList
             if (source == null) {
                 return;
             }
+
+            MediaType mt = null; // = MediaType.getMediaTypeForExtension();
+            if (source.isFile()) {
+                mt = MediaType.getMediaTypeForExtension(FilenameUtils.getExtension(source.getFile().getName()));
+            } else if (source.isPlaylistItem()) {
+                mt = MediaType.getMediaTypeForExtension(FilenameUtils.getExtension(source.getPlaylistItem().getFileName()));
+            } else if (source.isURL()) {
+                GUIMediator.instance().playInOS(source);
+                return;
+            }
+
+            // Discontinue FW video player, use OS's default
+            if (mt != null && mt.equals(MediaType.getVideoMediaType())) {
+                GUIMediator.instance().playInOS(source);
+                return;
+            }
+
             if (!isPreview && PlayerSettings.USE_OS_DEFAULT_PLAYER.getValue()) {
                 GUIMediator.instance().playInOS(source);
                 return;
@@ -540,7 +556,7 @@ public abstract class MediaPlayer implements RefreshListener, MPlayerUIEventList
             return false;
         }
         File currentMediaFile = currentMedia.getFile();
-        if (currentMediaFile != null && file.equals(currentMediaFile))
+        if (file.equals(currentMediaFile))
             return true;
         PlaylistItem playlistItem = currentMedia.getPlaylistItem();
         return playlistItem != null && new File(playlistItem.getFilePath()).equals(file);
@@ -567,7 +583,7 @@ public abstract class MediaPlayer implements RefreshListener, MPlayerUIEventList
             return false;
         }
         PlaylistItem currentMediaFile = currentMedia.getPlaylistItem();
-        return currentMediaFile != null && playlistItem.equals(currentMediaFile);
+        return playlistItem.equals(currentMediaFile);
     }
 
     private MediaSource getNextRandomSong(MediaSource currentMedia) {

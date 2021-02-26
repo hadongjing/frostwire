@@ -67,7 +67,6 @@
     <string name="azureus_peer_manager_status_finished">ختم</string>
     <string name="your_installation_is_complete">آپ کی تنصیب مکمل ہو گیا ہے.</string>
     <string name="error_connection_timed_out">غلطی: کنکشن / وقت ختم گرا. دوبارہ کوشش کریں.</string>
-    <string name="application_label">FrostWire</string>
     <string name="all_free_downloads">تمام مفت ڈاؤن لوڈ</string>
     <string name="request_again">درخواست دوبارہ</string>
     <string name="use_zooqle">استعمال Zooqle.com</string>
@@ -91,7 +90,6 @@
     <string name="storage_picker_treeuri_error">غیر متوقع خرابی اٹھا اسٹوریج پاتھ</string>
     <string name="open_menu_action">کھولیں s%</string>
     <string name="wifi_seeding_has_been_turned_off">کوئی وائی فائی دستیاب، بوائ بند کردیا گیا ہے</string>
-    <string name="azureus_manager_item_allocating">آونٹن</string>
     <string name="app_shutdown_dlg_message">یہ مرضی سے بند تمام کی منتقلی اور پس منظر کی خدمات. کیا تمہیں یقین ہے؟</string>
     <string name="show_transfers_on_download_start">ٹرانسفر ڈاؤن لوڈ شروع پر شو</string>
     <string name="send_feedback">رائے بھیجیں</string>

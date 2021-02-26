@@ -26,7 +26,6 @@
     <string name="protected_connections_visibility_bullet_html"><![CDATA[ Estás conectado a Internet usando un VPN. <br><br> Si aún no lo has hecho, te recomendamos que uses uno de estos servicios para encriptar tu conexión y <b>proteger tu privacidad</b>. ]]></string>
 
     <!-- NON HTML TAGS -->
-    <string name="application_label">FrostWire</string>
     <string name="activity_preferences_name">Configuración</string>
     <string name="exit">Salir</string>
     <string name="search_label">Buscar</string>
@@ -87,7 +86,6 @@
     <string name="yes_no_cancel_delete_transfer_question">¿Seguro que quieres cancelar esta descarga? (Los datos descargados hasta ahora se borrarán)</string>
     <string name="cancel_transfer">Cancelar Transferencia</string>
     <string name="azureus_peer_manager_status_finished">Terminado</string>
-    <string name="azureus_manager_item_allocating">Asignando</string>
     <string name="azureus_manager_item_downloading">Descargando</string>
     <string name="azureus_manager_item_seeding">Compartiendo</string>
     <string name="azureus_manager_item_stopped">Parado</string>
@@ -161,6 +159,8 @@
     <string name="use_torrentz2">Usar Torrentz2</string>
     <string name="use_limetorrents">Usar Limetorrents</string>
     <string name="use_magnetdl">Usar MagnetDL</string>
+    <string name="use_torrent_paradise">Usar TorrentParadise</string>
+    <string name="use_glotorrents">Usar GloTorrents</string>
     <string name="use_nyaa">Usar Nyaa</string>
     <string name="use_eztv">Usar Eztv</string>
     <string name="transfer_status_demuxing">Demuxing</string>
@@ -179,6 +179,8 @@
     <string name="torrent_url_added">URL de Torrent añadida a las transferencias.</string>
     <string name="please_enter_valid_url">Por favor, ingresa una URL válida</string>
     <string name="use_yify">Usar Yify</string>
+    <string name="use_one337x">Usar 1337x</string>
+    <string name="use_idope">Usar Idope</string>
     <string name="torrent_transfer_consuming_mobile_data">Advertencia: Esta transferencia de torrent está usando tu data 3G/4G (Revisa tus preferencias de red si deseas usar BitTorrent solo con Wi-Fi)</string>
     <string name="transfers_context_resume_all_torrent_transfers">Reanudar todas las transferencias Torrent</string>
     <string name="cant_open_file_does_not_exist">No puedo abrir %1$s, el archivo no existe.</string>
@@ -414,6 +416,7 @@
     <string name="vpn_find_out_more">Saber más</string>
     <string name="vpn_suggestion_nordvpn">NORDVPN \n Prueba gratuita de 7 días</string>
     <string name="contact_us">Contáctanos</string>
+    <string name="community">Comunidad</string>
     <string name="play_uppercase">PLAY</string>
     <string name="minutes_left_ad_free">%d minutos restan sin publicidad</string>
     <string name="minute_left_ad_free">Un minuto más sin publicidad</string>

@@ -189,8 +189,6 @@ public final class BTDownload implements BittorrentDownload {
                 return TransferState.FINISHED;
             case SEEDING:
                 return TransferState.SEEDING;
-            case ALLOCATING:
-                return TransferState.ALLOCATING;
             case CHECKING_RESUME_DATA:
                 return TransferState.CHECKING;
             case UNKNOWN:
@@ -549,7 +547,7 @@ public final class BTDownload implements BittorrentDownload {
     @Override
     public List<TransferItem> getItems() {
         ArrayList<TransferItem> items = new ArrayList<>();
-        if (th.isValid()) {
+        if (th != null && th.isValid()) {
             TorrentInfo ti = th.torrentFile();
             if (ti != null && ti.isValid()) {
                 FileStorage fs = ti.files();

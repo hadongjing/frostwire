@@ -24,7 +24,6 @@
     <string name="you_dont_need_a_vpn_to_use_frostwire_bullet_html"><![CDATA[<b>Divulgation:</b> Bien que recommandée pour vos téléchargements, en particulier lors du téléchargement ou de l\'échange d\'informations sensibles (par exemple bancaires) et lors de l\'utilisation de Wi-Fi publics ou de données mobiles, <b>vous ne pas besoin d\'un VPN à utiliser FrostWire. </b>]]></string>
     <string name="unprotected_connections_visibility_bullet_html"><![CDATA[ <b>Votre vie privée est un droit humain fondamental</b>. Une connexion non protégée signifie tout ce que vous faites en ligne <b>recherches, messagerie et téléchargements</b>, peut être surveillé et intercepté par n\'importe qui sur votre réseau, par ex. Fournisseurs de services Internet, hackers, gouvernements.<br><br><b>Nous recommandons fortement d\'utiliser un service VPN</b>. <br> Voici quelques options qui fournissent un service fiable et fonctionnent bien avec FrostWire:]]></string>
     <string name="protected_connections_visibility_bullet_html"><![CDATA[ Vous êtes connecté à Internet via un VPN. <br><br> Si ce n\'est déjà fait, nous vous recommandons d\'utiliser l\'un des services ci-dessous pour crypter votre connexion et <b>protéger votre vie privée</b>. ]]></string>
-    <string name="application_label">FrostWire</string>
     <string name="activity_preferences_name">Paramètres</string>
     <string name="exit">Quitter </string>
     <string name="search_label">Recherche</string>
@@ -85,7 +84,6 @@
     <string name="yes_no_cancel_delete_transfer_question">Voulez-vous vraiment annuler ce téléchargement (les données téléchargées seront effacées)?</string>
     <string name="cancel_transfer">Annuler le transfert </string>
     <string name="azureus_peer_manager_status_finished">Terminé</string>
-    <string name="azureus_manager_item_allocating">Attribution </string>
     <string name="azureus_manager_item_downloading">Téléchargement</string>
     <string name="azureus_manager_item_seeding">Ensemencement</string>
     <string name="azureus_manager_item_stopped">Arrêter </string>
@@ -183,6 +181,8 @@
     <string name="please_enter_valid_url">S\'il vous plaît entrer une URL valide</string>
     <string name="available">disponible</string>
     <string name="use_yify">Utilisez Yify</string>
+    <string name="use_one337x">Utilisez 1337x</string>
+    <string name="use_idope">Utilisez Idope</string>
     <string name="torrent_transfer_consuming_mobile_data">Attention: Ce transfert de torrent utilise vos données 3G/4G. (Vérifiez vos préférences de réseau si vous souhaitez utiliser BitTorrent uniquement sur WiFi)</string>
     <string name="transfers_context_resume_all_torrent_transfers">Reprendre tous les transferts torrent</string>
     <string name="storage_setting_confirm_dialog_title">CARTE SD</string>
@@ -268,6 +268,8 @@
     <string name="select_option_below">Sélectionnez l\'option ci-dessous:</string>
     <string name="use_limetorrents">Utilisez Limetorrents</string>
     <string name="use_magnetdl">Utilisez MagnetDL</string>
+    <string name="use_torrent_paradise">Utilisez TorrentParadise</string>
+    <string name="use_glotorrents">Utilisez GloTorrents</string>
     <string name="error_no_internet_connection">Erreur: Vérifiez la connexion Internet</string>
     <string name="why_we_need_storage_permissions">Pourquoi nous avons besoin des autorisations de stockage.</string>
     <string name="invalid_filename">Nom de fichier non valide</string>
@@ -412,6 +414,7 @@
     <string name="vpn_find_out_more">En savoir plus</string>
     <string name="vpn_suggestion_nordvpn">NORDVPN \n Essai gratuit de 7 jours</string>
     <string name="contact_us">Contactez nous</string>
+    <string name="community">Communauté</string>
     <string name="use_nyaa">Utilisez Nyaa</string>
     <string name="play_uppercase">LIRE</string>
     <string name="minutes_left_ad_free">%d minutes restantes sans annonces</string>

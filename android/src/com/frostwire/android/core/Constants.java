@@ -1,6 +1,6 @@
 /*
  * Created by Angel Leon (@gubatron), Alden Torres (aldenml)
- * Copyright (c) 2011-2018, FrostWire(R). All rights reserved.
+ * Copyright (c) 2011-2020, FrostWire(R). All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,8 +66,6 @@ public final class Constants {
     public static final String PREF_KEY_SEARCH_FULLTEXT_SEARCH_RESULTS_LIMIT = "frostwire.prefs.search.fulltext_search_results_limit";
 
     public static final String PREF_KEY_SEARCH_USE_ZOOQLE = "frostwire.prefs.search.use_zooqle";
-    public static final String PREF_KEY_SEARCH_USE_VERTOR = "frostwire.prefs.search.use_vertor";
-    public static final String PREF_KEY_SEARCH_USE_YOUTUBE = "frostwire.prefs.search.use_youtube";
     public static final String PREF_KEY_SEARCH_USE_SOUNDCLOUD = "frostwire.prefs.search.use_soundcloud";
     public static final String PREF_KEY_SEARCH_USE_ARCHIVEORG = "frostwire.prefs.search.use_archiveorg";
     public static final String PREF_KEY_SEARCH_USE_FROSTCLICK = "frostwire.prefs.search.use_frostclick";
@@ -76,12 +74,14 @@ public final class Constants {
     public static final String PREF_KEY_SEARCH_USE_LIMETORRENTS = "frostwire.prefs.search.use_limetorrents";
     public static final String PREF_KEY_SEARCH_USE_NYAA = "frostwire.prefs.search.use_nyaa";
     public static final String PREF_KEY_SEARCH_USE_EZTV = "frostwire.prefs.search.use_eztv";
-    public static final String PREF_KEY_SEARCH_USE_APPIA = "frostwire.prefs.search.use_appia";
     public static final String PREF_KEY_SEARCH_USE_TPB = "frostwire.prefs.search.use_tpb";
     public static final String PREF_KEY_SEARCH_USE_YIFY = "frostwire.prefs.search.use_yify";
-    public static final String PREF_KEY_SEARCH_USE_TORRENTSFM = "frostwire.prefs.search.use_torrentsfm";
+    public static final String PREF_KEY_SEARCH_USE_ONE337X = "frostwire.prefs.search.use_one337x";
     public static final String PREF_KEY_SEARCH_USE_TORRENTZ2 = "frostwire.prefs.search.use_torrentz2";
+    public static final String PREF_KEY_SEARCH_USE_IDOPE = "frostwire.prefs.search.use_idope";
     public static final String PREF_KEY_SEARCH_USE_MAGNETDL = "frostwire.prefs.search.use_magnetdl";
+    public static final String PREF_KEY_SEARCH_USE_TORRENT_PARADISE = "frostwire.prefs.search.use_torrent_paradise";
+    public static final String PREF_KEY_SEARCH_USE_GLOTORRENTS = "frostwire.prefs.search.use_glotorrents";
 
     public static final String PREF_KEY_GUI_VIBRATE_ON_FINISHED_DOWNLOAD = "frostwire.prefs.gui.vibrate_on_finished_download";
     public static final String PREF_KEY_GUI_LAST_MEDIA_TYPE_FILTER = "frostwire.prefs.gui.last_media_type_filter";
@@ -205,7 +205,7 @@ public final class Constants {
     public static final String FROSTWIRE_VPN_URL = "https://www.frostwire.com/vpn";
 
     public static final String PIA_VPN_URL = "https://www.privateinternetaccess.com/pages/android-vpn-app/FROSTWIRE";
-    public static final String EXPRESSVPN_URL = "https://www.linkev.com/?offer=3monthsfree&a_fid=frostwire";
+    public static final String EXPRESSVPN_URL = "https://www.xvbelink.com/?offer=3monthsfree&a_fid=frostwire";
     public static final String NORDVPN_URL = "https://go.nordvpn.net/aff_c?offer_id=222&aff_id=11226";
 
     public static final int NOTIFICATION_FROSTWIRE_STATUS = 112000;
@@ -215,7 +215,7 @@ public final class Constants {
     public static final String FROSTWIRE_NOTIFICATION_CHANNEL_ID = "frostwire";
     public static final String FROSTWIRE_ANDROID_FAQ_HOW_TO_ADD_SONGS_TO_PLAYLIST_URL = "https://support.frostwire.com/hc/en-us/articles/213091283-How-To-Create-Playlists-on-FrostWire-for-Android";
 
-    public static final int MIN_REWARD_AD_FREE_MINUTES = 60;
+    public static final int MIN_REWARD_AD_FREE_MINUTES = 30;
     public static final int MAX_REWARD_AD_FREE_MINUTES = 240;
 
     public static final String FW_REWARDED_VIDEO_MINUTES = "FW_REWARDED_VIDEO_MINUTES";

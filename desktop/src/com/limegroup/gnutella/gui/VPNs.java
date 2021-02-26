@@ -20,10 +20,8 @@ package com.limegroup.gnutella.gui;
 import com.frostwire.bittorrent.BTEngine;
 import com.frostwire.desktop.DesktopPlatform;
 import com.frostwire.jlibtorrent.EnumNet;
-import com.frostwire.platform.Platform;
 import com.frostwire.platform.Platforms;
-import com.frostwire.platform.VPNMonitor;
-import org.limewire.util.OSUtils;
+import com.frostwire.util.OSUtils;
 
 import java.util.List;
 
@@ -73,7 +71,10 @@ public final class VPNs {
         try {
             List<EnumNet.IpRoute> routes = EnumNet.enumRoutes(BTEngine.getInstance());
             for (EnumNet.IpRoute route : routes) {
-                if (route.destination().toString().equals("0.0.0.0") && route.name().contains("tun")) {
+                String route_name = route.name();
+                String destination = route.destination().toString();
+                if (destination.equals("0.0.0.0") &&
+                        (route_name.contains("tun") || route_name.contains("wg"))) {
                     result = true;
                     break;
                 }
@@ -92,12 +93,16 @@ public final class VPNs {
                     isWindowsVPNAdapterActive(interfaces, null, "ExpressVPN Tap Adapter") ||
                     isWindowsVPNAdapterActive(interfaces, routes, "CactusVPN") ||
                     isWindowsVPNAdapterActive(interfaces, routes, "TAP-NordVPN") ||
+                    isWindowsVPNAdapterActive(interfaces, routes, "NordVPN") ||
+                    isWindowsVPNAdapterActive(interfaces, routes, "NordLynx Tunnel") ||
                     isWindowsVPNAdapterActive(interfaces, routes, "AVG TAP") ||
                     isWindowsVPNAdapterActive(interfaces, routes, "SecureLine TAP") || // avast!
                     isWindowsVPNAdapterActive(interfaces, null, "TAP-Windows Adapter V9") || // IPVanish
                     isWindowsVPNAdapterActive(interfaces, routes, "CyberGhost") || // CyberGhost
-                    isWindowsVPNAdapterActive(interfaces, routes, "Windscribe VPN") || isWindowsVPNAdapterActive(interfaces, routes, "Windscribe IKEv2") ||
-                    isWindowsVPNAdapterActive(interfaces, routes, "PureVPN");
+                    isWindowsVPNAdapterActive(interfaces, routes, "Windscribe VPN") ||
+                    isWindowsVPNAdapterActive(interfaces, routes, "Windscribe IKEv2") ||
+                    isWindowsVPNAdapterActive(interfaces, routes, "PureVPN") ||
+                    isWindowsVPNAdapterActive(interfaces, routes, "WireGuard Tunnel"); // Mozilla VPN
         } catch (Throwable t2) {
             t2.printStackTrace();
             return false;

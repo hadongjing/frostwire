@@ -27,7 +27,6 @@
     <string name="your_installation_is_complete">Installationen är klar.</string>
     <string name="error_connection_timed_out">Fel: anslutningen har avbrutits/sjunkit. Försök igen.</string>
     <string name="azureus_manager_item_seeding">Seeding</string>
-    <string name="application_label">FrostWire</string>
     <string name="all_free_downloads">Alla gratis nedladdningar</string>
     <string name="torrent_max_download_speed">Max Totalt nedladdningshastighet</string>
     <string name="torrent_max_peers">Max Totalt Peers</string>
@@ -61,7 +60,6 @@
     <string name="wifi_seeding_has_been_turned_off">Ingen WiFi tillgängliga, sådd har stängts av</string>
     <string name="pause_torrent_menu_action">Paus</string>
     <string name="storage_preference_title">Välj lagringsplats</string>
-    <string name="azureus_manager_item_allocating">Fördela</string>
     <string name="app_shutdown_dlg_message">Detta kommer avstängning alla överföringar och bakgrundstjänster. Är du säker?</string>
     <string name="show_transfers_on_download_start">Visa överföringar på nedladdning start</string>
     <string name="send_feedback">Skicka feedback</string>

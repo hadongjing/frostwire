@@ -17,7 +17,7 @@ package com.limegroup.gnutella.gui.menu;
 
 import com.limegroup.gnutella.gui.I18n;
 import com.limegroup.gnutella.gui.actions.FileMenuActions;
-import org.limewire.util.OSUtils;
+import com.frostwire.util.OSUtils;
 
 import javax.swing.*;
 
@@ -35,7 +35,7 @@ final class FileMenu extends AbstractMenu {
         super(I18n.tr("&File"));
         MENU.add(createMenuItem(new FileMenuActions.SendFileAction()));
         MENU.addSeparator();
-        MENU.add(createMenuItem(new FileMenuActions.OpenMagnetTorrentAction()));
+        MENU.add(createMenuItem(new FileMenuActions.OpenMagnetTorrentVideoUrlAction()));
         MENU.add(createMenuItem(new FileMenuActions.CreateTorrentAction()));
         if (!OSUtils.isMacOSX()) {
             MENU.addSeparator();

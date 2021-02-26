@@ -33,11 +33,11 @@ import com.limegroup.gnutella.settings.SharingSettings;
 import com.limegroup.gnutella.settings.StartupSettings;
 import com.limegroup.gnutella.util.FrostWireUtils;
 import com.limegroup.gnutella.util.MacOSXUtils;
-import org.limewire.service.ErrorService;
+import com.frostwire.service.ErrorService;
 import org.limewire.util.CommonUtils;
 import org.limewire.util.I18NConvert;
 import org.limewire.util.NetworkUtils;
-import org.limewire.util.OSUtils;
+import com.frostwire.util.OSUtils;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicHTML;
@@ -146,7 +146,7 @@ final class Initializer {
         // Set the error handler so we can receive core errors.
         ErrorService.setErrorCallback(new ErrorHandler());
         // Set the messaging handler so we can receive core messages
-        org.limewire.service.MessageService.setCallback(new MessageHandler());
+        com.frostwire.service.MessageService.setCallback(new MessageHandler());
         // Set the default event error handler so we can receive uncaught
         // AWT errors.
         DefaultErrorCatcher.install();
@@ -289,11 +289,7 @@ final class Initializer {
     private void startSetupManager(final SetupManager setupManager) {
         // Run through the initialization sequence -- this must always be
         // called before GUIMediator constructs the LibraryTree!
-        //stopwatch.resetAndLog("event evt queue");
-        // Then create the setup manager if needed.
-        //stopwatch.resetAndLog("create setupManager if needed");
         GUIMediator.safeInvokeAndWait(setupManager::createIfNeeded);
-        //stopwatch.resetAndLog("return from evt queue");
     }
 
     /**

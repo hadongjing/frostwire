@@ -18,6 +18,8 @@
 
 package com.frostwire.gui.components.transfers;
 
+import com.frostwire.gui.bittorrent.TransferDetailFilesActionsRenderer;
+import com.frostwire.gui.theme.SkinPopupMenu;
 import com.limegroup.gnutella.gui.PaddedPanel;
 import com.limegroup.gnutella.gui.search.GenericCellEditor;
 import com.limegroup.gnutella.gui.tables.AbstractTableMediator;
@@ -45,24 +47,20 @@ public class TransferDetailFilesTableMediator extends AbstractTableMediator<Tran
 
     @Override
     protected JPopupMenu createPopupMenu() {
-        return null;
-    }
-
-    @Override
-    public void handleActionKey() {
-    }
-
-    @Override
-    public void handleSelection(int row) {
-    }
-
-    @Override
-    public void handleNoSelection() {
+        TransferDetailFilesModel dataModel = getDataModel();
+        TransferDetailFilesDataLine transferDetailFilesDataLine = dataModel.get(TABLE.getSelectedRow());
+        TransferDetailFiles.TransferItemHolder transferItemHolder = transferDetailFilesDataLine.getInitializeObject();
+        JPopupMenu menu = new SkinPopupMenu();
+        menu.add(new TransferDetailFilesActionsRenderer.OpenInFolderAction(transferItemHolder));
+        if (transferItemHolder.transferItem.isComplete()) {
+            menu.add(new TransferDetailFilesActionsRenderer.PlayAction(transferItemHolder));
+        }
+        return menu;
     }
 
     @Override
     protected void setDefaultEditors() {
-        super.setDefaultEditors();
         TransferDetailFilesDataLine.ACTIONS_COLUMN.setCellEditor(new GenericCellEditor(getTransferDetailFileActionsRenderer()));
+        TransferDetailFilesDataLine.ACTIONS_COLUMN.setCellRenderer(getTransferDetailFileActionsRenderer());
     }
 }

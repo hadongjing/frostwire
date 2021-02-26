@@ -220,7 +220,7 @@ public final class AudioPlayerActivity extends AbstractActivity implements
         initMopubBannerView();
 
         // Album Art Ad Controls
-        if (mPlaybackStatus != null) {
+        if (mPlayPauseButton != null) {
             mPlayPauseButton.setOnLongClickListener(new StopListener(this, true));
         }
 
@@ -846,11 +846,20 @@ public final class AudioPlayerActivity extends AbstractActivity implements
      */
     private void updatePlaybackControls() {
         // Set the repeat image
-        mRepeatButton.updateRepeatState();
+        if (mRepeatButton != null) {
+            mRepeatButton.updateRepeatState();
+        }
         // Set the play and pause image
-        mPlayPauseButton.updateState();
+        if (mPlayPauseButton != null) {
+            if (mPlaybackStatus != null && !mPlayPauseButton.hasOnLongClickListener()) {
+                mPlayPauseButton.setOnLongClickListener(new StopListener(this, true));
+            }
+            mPlayPauseButton.updateState();
+        }
         // Set the shuffle image
-        mShuffleButton.updateShuffleState();
+        if (mShuffleButton != null) {
+            mShuffleButton.updateShuffleState();
+        }
     }
 
     private void updateQueueFragmentCurrentSong() {
@@ -1306,6 +1315,9 @@ public final class AudioPlayerActivity extends AbstractActivity implements
                 return;
             }
             AudioPlayerActivity activity = mReference.get();
+            if (activity == null) {
+                return;
+            }
             final String action = intent.getAction();
             if (action == null) {
                 return;
@@ -1323,14 +1335,20 @@ public final class AudioPlayerActivity extends AbstractActivity implements
                 case MusicPlaybackService.PLAYSTATE_CHANGED:
                     LOG.info("PlaybackStatus::onReceive(MusicPlaybackService.PLAYSTATE_CHANGED)");
                     // Set the play and pause image
-                    activity.mPlayPauseButton.updateState();
+                    if (activity.mPlayPauseButton != null) {
+                        activity.mPlayPauseButton.updateState();
+                    }
                     break;
                 case MusicPlaybackService.REPEATMODE_CHANGED:
                 case MusicPlaybackService.SHUFFLEMODE_CHANGED:
                     // Set the repeat image
-                    activity.mRepeatButton.updateRepeatState();
+                    if (activity.mRepeatButton != null) {
+                        activity.mRepeatButton.updateRepeatState();
+                    }
                     // Set the shuffle image
-                    activity.mShuffleButton.updateShuffleState();
+                    if (activity.mShuffleButton != null) {
+                        activity.mShuffleButton.updateShuffleState();
+                    }
                     break;
             }
         }

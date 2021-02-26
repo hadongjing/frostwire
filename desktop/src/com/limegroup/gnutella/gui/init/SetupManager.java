@@ -20,10 +20,11 @@ import com.limegroup.gnutella.gui.shell.FrostAssociations;
 import com.limegroup.gnutella.gui.util.BackgroundExecutorService;
 import com.limegroup.gnutella.settings.ApplicationSettings;
 import com.limegroup.gnutella.settings.InstallSettings;
+import com.limegroup.gnutella.settings.StartupSettings;
 import com.limegroup.gnutella.util.FrostWireUtils;
 import org.limewire.setting.SettingsGroupManager;
 import org.limewire.util.CommonUtils;
-import org.limewire.util.OSUtils;
+import com.frostwire.util.OSUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -109,6 +110,10 @@ public final class SetupManager {
         if (windows.size() == 0) {
             return;
         }
+
+        // Reset Tips of the Day on an update
+        StartupSettings.SHOW_TOTD.setValue(true);
+
         // If the INSTALLED value is set, that means that a previous
         // installer has already been run.
         boolean partial = ApplicationSettings.INSTALLED.getValue();

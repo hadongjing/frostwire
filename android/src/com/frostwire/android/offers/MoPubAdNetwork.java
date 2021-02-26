@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
@@ -40,7 +39,7 @@ import com.mopub.common.privacy.PersonalInfoManager;
 import com.mopub.common.util.Reflection;
 import com.mopub.mobileads.MoPubErrorCode;
 import com.mopub.mobileads.MoPubInterstitial;
-import com.mopub.mobileads.MoPubRewardedVideos;
+import com.mopub.mobileads.MoPubRewardedAds;
 import com.mopub.network.Networking;
 
 import java.lang.ref.WeakReference;
@@ -81,7 +80,7 @@ public class MoPubAdNetwork extends AbstractAdNetwork implements ConsentStatusCh
 
     private static final String UNIT_ID_INTERSTITIAL_TABLET = (Offers.DEBUG_MODE) ? TEST_UNIT_INTERSTITIAL : "cebdbc56b37c4d31ba79e861d1cb0de4";
     private static final String UNIT_ID_INTERSTITIAL_MOBILE = (Offers.DEBUG_MODE) ? TEST_UNIT_INTERSTITIAL : "399a20d69bdc449a8e0ca171f82179c8";
-    public static final String UNIT_ID_REWARDED_VIDEO = (Offers.DEBUG_MODE) ? TEST_UNIT_REWARDED_VIDEO : "4e4f31e5067049998664b5ec7b9451e1";
+    public static final String UNIT_ID_REWARDED_AD = (Offers.DEBUG_MODE) ? TEST_UNIT_REWARDED_VIDEO : "4e4f31e5067049998664b5ec7b9451e1";
 
     private final Bundle npaBundle = new Bundle();
     private boolean starting = false;
@@ -198,9 +197,14 @@ public class MoPubAdNetwork extends AbstractAdNetwork implements ConsentStatusCh
     @Override
     public boolean showInterstitial(Activity activity, String placement, boolean shutdownActivityAfterwards, boolean dismissActivityAfterward) {
         if (interstitials == null || interstitials.isEmpty()) {
+            LOG.warn("showInterstitial() failed, interstitials null or empty.");
             return false;
         }
         MoPubInterstitial interstitial = interstitials.get(placement);
+        if (interstitial == null) {
+            LOG.warn("showInterstitial() failed, could not find interstitial for placement=" + placement);
+            return false;
+        }
         MoPubInterstitialListener listener = (MoPubInterstitialListener) interstitial.getInterstitialAdListener();
         if (listener != null) {
             listener.shutdownAppAfter(shutdownActivityAfterwards);
@@ -216,8 +220,9 @@ public class MoPubAdNetwork extends AbstractAdNetwork implements ConsentStatusCh
         if (!interstitial.isReady()) {
             try {
                 Method isDestroyedMethod = interstitial.getClass().getDeclaredMethod("isDestroyed");
+                boolean isDestroyed = false;
                 isDestroyedMethod.setAccessible(true);
-                boolean isDestroyed = (boolean) isDestroyedMethod.invoke(interstitial);
+                isDestroyed = (boolean) isDestroyedMethod.invoke(interstitial);
                 isDestroyedMethod.setAccessible(false);
 
                 if (isDestroyed) {
@@ -253,8 +258,8 @@ public class MoPubAdNetwork extends AbstractAdNetwork implements ConsentStatusCh
             LOG.info("loadRewardedVideo() aborted. Network not started or not enabled");
             return; //not ready
         }
-        MoPubRewardedVideos.setRewardedVideoListener(MoPubRewardedVideoListener.instance());
-        MoPubRewardedVideos.loadRewardedVideo(UNIT_ID_REWARDED_VIDEO);
+        MoPubRewardedAds.setRewardedAdListener(MoPubRewardedAdListener.instance());
+        MoPubRewardedAds.loadRewardedAd(UNIT_ID_REWARDED_AD);
         LOG.info("loadRewardedVideo() called");
     }
 
@@ -273,24 +278,9 @@ public class MoPubAdNetwork extends AbstractAdNetwork implements ConsentStatusCh
             MoPubInterstitialListener moPubListener = new MoPubInterstitialListener(this, placement);
             moPubInterstitial.setInterstitialAdListener(moPubListener);
             interstitials.put(placement, moPubInterstitial);
-            async(moPubInterstitial, MoPubAdNetwork::loadMoPubInterstitialAsync);
-        } catch (Throwable e) {
-            LOG.warn("loadMoPubInterstitial(activity, placement): Mopub Interstitial couldn't be loaded", e);
-        }
-    }
-
-    private static void loadMoPubInterstitialAsync(final MoPubInterstitial moPubInterstitial) {
-        try {
-            if (Looper.myLooper() == null) {
-                Looper.prepare();
-            }
-        } catch (Throwable e) {
-            LOG.warn("loadMoPubInterstitialAsync(moPubInterstitial): couldn't do Looper.prepare(), perhaps there was a looper here already", e);
-        }
-        try {
             moPubInterstitial.load();
         } catch (Throwable e) {
-            LOG.warn("loadMoPubInterstitialAsync(moPubInterstitial): Mopub Interstitial couldn't be loaded", e);
+            LOG.warn("loadMoPubInterstitial(activity, placement): Mopub Interstitial couldn't be loaded", e);
         }
     }
 

@@ -1,4 +1,4 @@
-/*
+	/*
  * Created by Angel Leon (@gubatron), Alden Torres (aldenml)
  * Copyright (c) 2011-2020, FrostWire(R). All rights reserved.
  *
@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,10 +17,10 @@
 
 package com.limegroup.gnutella.util;
 
+import com.frostwire.util.OSUtils;
 import org.apache.commons.io.IOUtils;
 import org.limewire.setting.SettingsFactory;
 import org.limewire.util.CommonUtils;
-import org.limewire.util.OSUtils;
 import org.limewire.util.SystemUtils;
 import org.limewire.util.SystemUtils.SpecialLocations;
 
@@ -38,11 +38,11 @@ public final class FrostWireUtils {
     /**
      * Constant for the current version of FrostWire.
      */
-    private static final String FROSTWIRE_VERSION = "6.8.4";
+    private static final String FROSTWIRE_VERSION = "6.9.2";
     /**
      * Build number for the current version, gets reset to 1 on every version bump
      */
-    private static final int BUILD_NUMBER = 292;
+    private static final int BUILD_NUMBER = 304;
     private static final boolean IS_RUNNING_FROM_SOURCE = new File("README.md").exists();
 
     /**
@@ -159,7 +159,7 @@ public final class FrostWireUtils {
     }
 
     /**
-     * @return 4 int array with { MAJOR.MINOR.REVISION.BUILD
+     * update the 4 int result array with { MAJOR, MINOR, REVISION, BUILD }
      */
     public static void getFrostWireVersionBuild(final int[] result) {
         String[] vStrArray = getFrostWireVersion().split("\\.");
@@ -167,5 +167,67 @@ public final class FrostWireUtils {
         result[1] = Integer.parseInt(vStrArray[1]);
         result[2] = Integer.parseInt(vStrArray[2]);
         result[3] = getBuildNumber();
+    }
+
+    public static String getDevelopmentFrostWireDesktopFolderPath() {
+        File fwJarFolder = new File(FrostWireUtils.getFrostWireJarPath()).getParentFile();
+        String pathPrefix;
+        // From Command line:
+        // fwJarFolder=.../frostwire/desktop/build
+        // .../frostwire/desktop/lib/native/fwplayer_osx
+        if (fwJarFolder.getAbsolutePath().endsWith("build")) {
+            pathPrefix = fwJarFolder.getParentFile().getAbsolutePath();
+        } else {
+            // From IntelliJ:
+            // fwJarFolder=.../frostwire/desktop/build/classes
+            // .../frostwire/desktop/build/lib/native/fwplayer_osx
+            pathPrefix = fwJarFolder.getParentFile().getParentFile().getAbsolutePath();
+        }
+        return pathPrefix;
+    }
+
+    /**
+     * Determines the path of the telluride launcher relative to FrostWire and returns the corresponding File object.
+     * It should determine it regardless of running from source or from a binary distribution.
+     */
+    public static File getTellurideLauncherFile() {
+        boolean isRelease = !FrostWireUtils.getFrostWireJarPath().contains("frostwire" + File.separatorChar + "desktop");
+        if (isRelease) {
+            if (OSUtils.isWindows()) {
+                // Should be on the same folder as frostwire.exe
+                return new File("telluride.exe");
+            } else if (OSUtils.isAnyMac()) {
+                String javaHome = System.getProperty("java.home");
+
+                //System.out.println("FrostWireUtils.getTellurideLauncherFile(): java.home -> " + javaHome);
+                // FrostWireUtils.getTellurideLauncherFile(): java.home -> /Path/To/FrostWire.app/Contents/PlugIns/jre/Contents/Home
+                File f = new File(javaHome).getAbsoluteFile();
+                f = f.getParentFile(); // Contents
+                f = f.getParentFile(); // jre
+                f = f.getParentFile(); // PlugIns
+                f = f.getParentFile(); // Contents
+                return new File(f, "MacOS" + File.separator + "telluride_macos"); //MacOS/telluride_macos
+            } else if (OSUtils.isLinux()) {
+                File candidate1 = new File("/usr/lib/frostwire", "telluride_linux");
+                if (candidate1.exists()) {
+                    return candidate1;
+                }
+                // maybe running from extracted .tar.gz installer
+                File candidate2 = new File("telluride_linux");
+                if (candidate2.exists()) {
+                    return candidate2;
+                }
+            }
+        } else {
+            String pathPrefix = getDevelopmentFrostWireDesktopFolderPath() + File.separatorChar + ".." + File.separatorChar + "telluride";
+            if (OSUtils.isWindows()) {
+                return new File(pathPrefix, "telluride.exe");
+            } else if (OSUtils.isAnyMac()) {
+                return new File(pathPrefix, "telluride_macos");
+            } else if (OSUtils.isLinux()) {
+                return new File(pathPrefix, "telluride_linux");
+            }
+        }
+        return null;
     }
 }
